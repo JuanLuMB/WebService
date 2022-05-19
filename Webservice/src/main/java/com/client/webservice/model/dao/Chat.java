@@ -1,18 +1,19 @@
 package com.client.webservice.model.dao;
 
+import lombok.*;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 
-import jakarta.xml.bind.annotation.XmlRootElement;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
 
 @Getter
 @Setter
 @ToString
-@XmlRootElement
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+
 
 
 public class Chat {
@@ -20,20 +21,18 @@ public class Chat {
     int id;
     String mensaje;
     int usuario;
-    LocalDate fecha;
+    String fecha;
 
-    public Chat() {
-
-    }
     public Chat(ResultSet result) {
         try {
-            this.mensaje = result.getString("Mensaje");
-            this.usuario = result.getInt("Usuario");
-            this.id = result.getInt("ID");
-            this.fecha = LocalDate.parse(result.getString("fecha"));
+            this.mensaje = result.getString("mensaje");
+            this.usuario = result.getInt("usuario");
+            this.id = result.getInt("id");
+            this.fecha = (result.getString("fecha"));
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
+
 }

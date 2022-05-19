@@ -39,7 +39,7 @@ public class ChatService {
 
     public int createCity(Chat chat) throws SQLException, ClassNotFoundException {
         try (Connection con = new MySQLConnector().getMySQLConnection()) {
-            return chatManager.create(con, chat);
+            return chatManager.create(con , chat);
         }
     }
 

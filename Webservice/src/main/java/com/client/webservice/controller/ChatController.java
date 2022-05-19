@@ -1,5 +1,7 @@
 package com.client.webservice.controller;
 
+
+import com.client.webservice.controller.dto.Notification;
 import com.client.webservice.model.manager.impl.ChatManagerImpl;
 import com.client.webservice.service.ChatService;
 import com.client.webservice.model.dao.Chat;
@@ -7,8 +9,10 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.GenericEntity;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import org.apache.maven.model.Build;
 
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.List;
 
 @Path("/notifications")
@@ -36,7 +40,7 @@ public class ChatController {
     }
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("/{id}")
+    @Path("/buscar/{id}")
     public Response findById(@PathParam("id") Integer id) {
         try {
             if (id == null) {
@@ -50,7 +54,7 @@ public class ChatController {
 
     }
     @DELETE
-    @Path("/{id}")
+    @Path("/delete/id/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response deleteCity(@PathParam("id") Integer id) {
         try {
@@ -59,10 +63,10 @@ public class ChatController {
                 if (chatService.deleteCity(id)) {
                     return Response.status(200).entity(cityToDelete).build();
                 }else{
-                    return Response.status(304).entity("City Was Not Deleted").build();
+                    return Response.status(304).entity("Mensaje Was Not Deleted").build();
                 }
             } else{
-                return Response.status(404).entity("City Not Found").build();
+                return Response.status(404).entity("Not Found").build();
             }
         } catch (SQLException | ClassNotFoundException e) {
             return Response.status(500).entity("Internal Error During DB Interaction").build();
@@ -71,13 +75,16 @@ public class ChatController {
 
     @POST
     @Path("/create")
-    @Produces(MediaType.APPLICATION_JSON)
+    //@Produces(MediaType.APPLICATION_JSON)
+    /**
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response createCity(Chat city){
+    **/
+    public Response createCity(@QueryParam("usuario")int usuario, @QueryParam("mensaje")String mensaje, @QueryParam("fecha")String fecha){
+
         try {
-            int createdId = chatService.createCity(city);
+            int createdId = chatService.createCity(Chat.builder().usuario(usuario).mensaje(mensaje).fecha(fecha).build());
             if(createdId > 0){
-                return Response.status(201).entity(chatService.findById(createdId)).build();
+                return Response.status(201).build();
             } else {
                 return Response.status(500).entity("Internal Error During Creating The City").build();
             }
@@ -87,6 +94,7 @@ public class ChatController {
     }
 
     @PUT
+    @Path("/update")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     public Response updateCity(Chat city){
@@ -100,4 +108,11 @@ public class ChatController {
             return Response.status(500).entity("Internal Error During DB Interaction").build();
         }
     }
+    @GET
+    @Path("notification/all")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response find_All() throws SQLException, ClassNotFoundException {
+        return Response.ok().entity(Notification.builder().id(14).title("Juanlu").body("Hola").build()).build();
+    }
+
 }
